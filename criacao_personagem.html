@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CRIAÇÃO DE PERSONAGEM</title>
+  <style>
+    body { 
+      background-color:#000; 
+      color:#00ff66; 
+      font-family:"Courier New", monospace; 
+      margin:0; 
+      padding:0;
+    }
+    
+    .container { 
+      width:760px; 
+      margin:auto; 
+      border:2px solid #00ff66; 
+      padding:10px; 
+      background-color:#020202; 
+    }
+    
+    h1, h2 { 
+      border-bottom:1px solid #00ff66; 
+      margin-top:15px;
+    }
+    
+    h1 { 
+      margin-top:0; 
+    }
+    
+    label { 
+      display:block; 
+      margin-top:8px; 
+    }
+    
+    input, select, textarea { 
+      width:100%; 
+      background:#000; 
+      color:#00ff66; 
+      border:1px solid #00ff66; 
+      font-family:"Courier New", monospace; 
+      padding:4px;
+    }
+    
+    .warning { 
+      color:#ff0033; 
+      font-size:12px; 
+      margin-bottom:10px; 
+    }
+    
+    .info { 
+      color:#00ccff; 
+      font-size:11px; 
+      margin:3px 0;
+    }
+    
+    .raca-info { 
+      color:#ff9900; 
+      font-size:11px; 
+      margin:5px 0;
+      border-left:2px solid #ff9900;
+      padding-left:8px;
+    }
+    
+    .human-bonus-selection { 
+      border:1px dashed #ff9900; 
+      padding:10px; 
+      margin:10px 0; 
+      background:#1a1a00;
+      display:none;
+    }
+    
+    .human-bonus-option { 
+      margin:5px 0; 
+    }
+    
+    .human-bonus-option label { 
+      display:inline; 
+      margin-right:10px; 
+    }
+    
+    .human-bonus-option input { 
+      width:auto; 
+      margin-right:5px; 
+    }
+    
+    .atributo { 
+      display:flex; 
+      align-items:center; 
+      margin:6px 0; 
+    }
+    
+    .atributo span { 
+      width:140px; 
+    }
+    
+    .atributo-valor { 
+      margin:0 10px; 
+      min-width:20px; 
+      text-align:center; 
+    }
+    
+    .bonus-racial { 
+      color:#ff9900; 
+      font-size:10px; 
+      margin-left:5px;
+    }
+    
+    .max-racial { 
+      color:#ff0033; 
+      font-size:10px; 
+      margin-left:5px;
+    }
+    
+    button { 
+      background:#000; 
+      color:#00ccff; 
+      border:1px solid #00ccff; 
+      font-family:"Courier New", monospace; 
+      cursor:pointer; 
+      margin:0 4px; 
+      padding:2px 8px; 
+    }
+    
+    button:hover { 
+      color:#ff0033; 
+      border-color:#ff0033; 
+    }
+    
+    button:disabled { 
+      color:#666; 
+      border-color:#666; 
+      cursor:not-allowed; 
+    }
+    
+    .pontos { 
+      margin:10px 0; 
+      color:#00ccff; 
+    }
+    
+    .pontos-extras { 
+      color:#ff9900; 
+      margin:5px 0;
+    }
+    
+    #periciasOrigem { 
+      min-height:20px; 
+    }
+    
+    .btn-registrar { 
+      margin-top:15px; 
+      padding:6px 12px; 
+      font-size:14px; 
+      width:100%; 
+    }
+    
+    .nivel-bonus { 
+      border:1px solid #ff9900; 
+      padding:4px; 
+      margin:5px 0; 
+      background:#1a1a00;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>CRIAÇÃO DE PERSONAGEM</h1>
+  <div class="warning">DISTRIBUA 9 PONTOS • MÁXIMO 3 POR ATRIBUTO • BÔNUS RACIAL PERMITE ATÉ 4</div>
+  
+  <div class="info">* A cada 5 níveis, ganha +2 pontos de atributo</div>
+  <div class="info">* Bônus racial permite até 4 no(s) atributo(s) específico(s)</div>
+
+  <label>Nome do Personagem</label>
+  <input type="text" id="nome">
+
+  <label>Raça</label>
+  <select id="raca">
+    <option value="humano">Humano</option>
+    <option value="carnisal">Carnisal</option>
+    <option value="descarnado">Descarnado</option>
+    <option value="morfo">Morfo</option>
+    <option value="phoyka">Phoyka</option>
+  </select>
+
+  <div id="racaInfo" class="raca-info">
+    <!-- Informações da raça aparecerão aqui -->
+  </div>
+
+  <div id="humanBonusSelection" class="human-bonus-selection">
+    <strong>BÔNUS RACIAL HUMANO:</strong> Escolha DOIS atributos para receber +1 cada
+    <div class="human-bonus-option">
+      <label><input type="checkbox" name="humanBonus" value="forca"> Força</label>
+      <label><input type="checkbox" name="humanBonus" value="resistencia"> Resistência</label>
+      <label><input type="checkbox" name="humanBonus" value="carisma"> Carisma</label>
+      <label><input type="checkbox" name="humanBonus" value="ideia"> Ideia</label>
+      <label><input type="checkbox" name="humanBonus" value="destreza"> Destreza</label>
+      <label><input type="checkbox" name="humanBonus" value="conexao"> Conexão</label>
+    </div>
+    <div class="info">Selecione exatamente 2 atributos</div>
+  </div>
+
+  <label>Classe</label>
+  <select id="classe">
+    <option>Iniciante</option>
+    <option>P.U.G</option>
+    <option>C.H.O</option>
+    <option>U.M.B</option>
+  </select>
+
+  <label>Nível</label>
+  <input type="number" id="nivel" value="1" min="1" max="20">
+
+  <div class="pontos">Iluminação: <span id="iluminacao">80%</span></div>
+  
+  <div id="bonusNivelContainer" class="nivel-bonus" style="display:none;">
+    <strong>Bônus de Nível:</strong> +<span id="bonusPontos">0</span> ponto(s) extra(s)
+  </div>
+
+  <label>Origem</label>
+  <select id="origem">
+    <option value="">-- selecione --</option>
+    <option value="academico">Acadêmico</option>
+    <option value="investigador">Investigador</option>
+    <option value="militar">Militar</option>
+    <option value="civil">Civil Comum</option>
+    <option value="cultista">Ex-Cultista</option>
+  </select>
+
+  <div class="pontos" id="periciasOrigem">Perícias de Origem: —</div>
+
+  <label>Perícias Extras (escolha manual)</label>
+  <textarea id="periciasExtras" rows="3" placeholder="Separe por vírgula"></textarea>
+
+  <h2>Atributos</h2>
+  <div class="pontos">Pontos restantes: <span id="pontosRestantes">9</span></div>
+  
+  <div class="pontos-extras">Pontos extras por nível: <span id="pontosExtras">0</span></div>
+
+  <div class="atributo">
+    <span>Força</span>
+    <button type="button" data-atributo="forca" data-acao="diminuir">-</button>
+    <span id="forca" class="atributo-valor">0</span>
+    <button type="button" data-atributo="forca" data-acao="aumentar">+</button>
+    <span id="forcaBonus" class="bonus-racial"></span>
+    <span id="forcaMax" class="max-racial"></span>
+  </div>
+  
+  <div class="atributo">
+    <span>Resistência</span>
+    <button type="button" data-atributo="resistencia" data-acao="diminuir">-</button>
+    <span id="resistencia" class="atributo-valor">0</span>
+    <button type="button" data-atributo="resistencia" data-acao="aumentar">+</button>
+    <span id="resistenciaBonus" class="bonus-racial"></span>
+    <span id="resistenciaMax" class="max-racial"></span>
+  </div>
+  
+  <div class="atributo">
+    <span>Carisma</span>
+    <button type="button" data-atributo="carisma" data-acao="diminuir">-</button>
+    <span id="carisma" class="atributo-valor">0</span>
+    <button type="button" data-atributo="carisma" data-acao="aumentar">+</button>
+    <span id="carismaBonus" class="bonus-racial"></span>
+    <span id="carismaMax" class="max-racial"></span>
+  </div>
+  
+  <div class="atributo">
+    <span>Ideia</span>
+    <button type="button" data-atributo="ideia" data-acao="diminuir">-</button>
+    <span id="ideia" class="atributo-valor">0</span>
+    <button type="button" data-atributo="ideia" data-acao="aumentar">+</button>
+    <span id="ideiaBonus" class="bonus-racial"></span>
+    <span id="ideiaMax" class="max-racial"></span>
+  </div>
+  
+  <div class="atributo">
+    <span>Destreza</span>
+    <button type="button" data-atributo="destreza" data-acao="diminuir">-</button>
+    <span id="destreza" class="atributo-valor">0</span>
+    <button type="button" data-atributo="destreza" data-acao="aumentar">+</button>
+    <span id="destrezaBonus" class="bonus-racial"></span>
+    <span id="destrezaMax" class="max-racial"></span>
+  </div>
+  
+  <div class="atributo">
+    <span>Conexão</span>
+    <button type="button" data-atributo="conexao" data-acao="diminuir">-</button>
+    <span id="conexao" class="atributo-valor">0</span>
+    <button type="button" data-atributo="conexao" data-acao="aumentar">+</button>
+    <span id="conexaoBonus" class="bonus-racial"></span>
+    <span id="conexaoMax" class="max-racial"></span>
+  </div>
+
+  <button type="button" class="btn-registrar" id="btnRegistrar">REGISTRAR PERSONAGEM</button>
+</div>
+
+<script>
+const SistemaPersonagem = {
+  // Configurações
+  pontosIniciais: 9,
+  maxAtributoNormal: 3,
+  maxAtributoComBonus: 4,
+  bonusPorNivel: 2,
+  intervaloNivel: 5,
+  
+  // Bônus raciais por raça
+  bonusRaciais: {
+    humano: { // Humanos escolhem 2 atributos à vontade
+      tipo: 'escolha',
+      quantidade: 2,
+      atributosDisponiveis: ['forca', 'resistencia', 'carisma', 'ideia', 'destreza', 'conexao']
+    },
+    carnisal: {
+      tipo: 'fixo',
+      atributos: {
+        forca: 1,
+        resistencia: 1
+      }
+    },
+    descarnado: {
+      tipo: 'fixo',
+      atributos: {
+        destreza: 1,
+        resistencia: 1
+      }
+    },
+    morfo: {
+      tipo: 'fixo',
+      atributos: {
+        ideia: 1,
+        conexao: 1
+      }
+    },
+    phoyka: {
+      tipo: 'fixo',
+      atributos: {
+        carisma: 1,
+        conexao: 1
+      }
+    }
+  },
+  
+  // Informações descritivas das raças
+  descricaoRacas: {
+    humano: "Humano: Versátil - Escolha DOIS atributos para receber +1 cada",
+    carnisal: "Carnisal: +1 em Força e Resistência (máximo 4 nestes)",
+    descarnado: "Descarnado: +1 em Destreza e Resistência (máximo 4 nestes)",
+    morfo: "Morfo: +1 em Ideia e Conexão (máximo 4 nestes)",
+    phoyka: "Phoyka: +1 em Carisma e Conexão (máximo 4 nestes)"
+  },
+  
+  // Estado
+  pontosRestantes: 9,
+  pontosExtras: 0,
+  racaAtual: 'humano',
+  bonusAtributosEscolhidos: [], // Para humanos
+  atributos: {
+    forca: 0,
+    resistencia: 0,
+    carisma: 0,
+    ideia: 0,
+    destreza: 0,
+    conexao: 0
+  },
+  
+  // Dados estáticos
+  periciasPorOrigem: {
+    academico: ["Conhecimento", "Pesquisa"],
+    investigador: ["Investigação", "Percepção"],
+    militar: ["Luta", "Tática"],
+    civil: ["Persuasão", "Intuição"],
+    cultista: ["Ocultismo", "Enganação"]
+  },
+  
+  // Inicialização
+  init: function() {
+    this.carregarElementos();
+    this.configurarEventos();
+    this.atualizarIluminacao();
+    this.atualizarBonusNivel();
+    this.atualizarInfoRaca();
+  },
+  
+  // Carregar referências DOM
+  carregarElementos: function() {
+    this.el = {
+      pontosRestantes: document.getElementById('pontosRestantes'),
+      pontosExtras: document.getElementById('pontosExtras'),
+      iluminacao: document.getElementById('iluminacao'),
+      periciasOrigem: document.getElementById('periciasOrigem'),
+      nivel: document.getElementById('nivel'),
+      origem: document.getElementById('origem'),
+      nome: document.getElementById('nome'),
+      raca: document.getElementById('raca'),
+      racaInfo: document.getElementById('racaInfo'),
+      classe: document.getElementById('classe'),
+      periciasExtras: document.getElementById('periciasExtras'),
+      btnRegistrar: document.getElementById('btnRegistrar'),
+      bonusNivelContainer: document.getElementById('bonusNivelContainer'),
+      bonusPontos: document.getElementById('bonusPontos'),
+      humanBonusSelection: document.getElementById('humanBonusSelection')
+    };
+    
+    // Mapear elementos de atributos e seus bônus
+    this.el.atributos = {};
+    this.el.bonusAtributos = {};
+    this.el.maxAtributos = {};
+    
+    const atributosLista = ['forca', 'resistencia', 'carisma', 'ideia', 'destreza', 'conexao'];
+    atributosLista.forEach(atributo => {
+      this.el.atributos[atributo] = document.getElementById(atributo);
+      this.el.bonusAtributos[atributo] = document.getElementById(atributo + 'Bonus');
+      this.el.maxAtributos[atributo] = document.getElementById(atributo + 'Max');
+    });
+    
+    // Checkboxes para bônus de humano
+    this.checkboxesBonus = document.querySelectorAll('input[name="humanBonus"]');
+  },
+  
+  // Configurar eventos
+  configurarEventos: function() {
+    // Eventos de atributos
+    document.querySelectorAll('[data-atributo]').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const atributo = e.target.dataset.atributo;
+        const acao = e.target.dataset.acao;
+        this.alterarAtributo(atributo, acao);
+      });
+    });
+    
+    // Eventos de nível
+    this.el.nivel.addEventListener('change', () => {
+      this.atualizarIluminacao();
+      this.atualizarBonusNivel();
+    });
+    this.el.nivel.addEventListener('input', () => {
+      this.atualizarIluminacao();
+      this.atualizarBonusNivel();
+    });
+    
+    // Evento de raça
+    this.el.raca.addEventListener('change', () => {
+      this.racaAtual = this.el.raca.value;
+      this.atualizarInfoRaca();
+      this.limparBonusEscolhidos();
+      this.atualizarDisplayAtributos();
+    });
+    
+    // Evento de origem
+    this.el.origem.addEventListener('change', () => this.mostrarPericiasOrigem());
+    
+    // Eventos dos checkboxes de bônus humano
+    this.checkboxesBonus.forEach(checkbox => {
+      checkbox.addEventListener('change', () => this.validarBonusHumano());
+    });
+    
+    // Evento de registro
+    this.el.btnRegistrar.addEventListener('click', () => this.registrarPersonagem());
+  },
+  
+  // Atualizar informações da raça
+  atualizarInfoRaca: function() {
+    this.el.racaInfo.textContent = this.descricaoRacas[this.racaAtual];
+    
+    // Mostrar/ocultar seletor de bônus humano
+    if (this.racaAtual === 'humano') {
+      this.el.humanBonusSelection.style.display = 'block';
+      this.validarBonusHumano();
+    } else {
+      this.el.humanBonusSelection.style.display = 'none';
+      this.bonusAtributosEscolhidos = [];
+    }
+  },
+  
+  // Validar seleção de bônus humano
+  validarBonusHumano: function() {
+    const checkboxesSelecionados = Array.from(this.checkboxesBonus)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+    
+    // Limitar a 2 seleções
+    if (checkboxesSelecionados.length > 2) {
+      // Desmarcar o último
+      const ultimo = checkboxesSelecionados[2];
+      document.querySelector(`input[name="humanBonus"][value="${ultimo}"]`).checked = false;
+      checkboxesSelecionados.splice(2, 1);
+    }
+    
+    this.bonusAtributosEscolhidos = checkboxesSelecionados;
+    this.atualizarDisplayAtributos();
+  },
+  
+  // Limpar bônus escolhidos ao mudar de raça
+  limparBonusEscolhidos: function() {
+    this.checkboxesBonus.forEach(checkbox => {
+      checkbox.checked = false;
+    });
+  },
+  
+  // Calcular pontos extras por nível
+  calcularPontosExtras: function(nivel) {
+    const bonus = Math.floor((nivel - 1) / this.intervaloNivel) * this.bonusPorNivel;
+    return bonus;
+  },
+  
+  // Atualizar bônus de nível
+  atualizarBonusNivel: function() {
+    const nivel = parseInt(this.el.nivel.value) || 1;
+    this.pontosExtras = this.calcularPontosExtras(nivel);
+    
+    // Atualizar display
+    this.el.pontosExtras.textContent = this.pontosExtras;
+    
+    // Atualizar pontos totais disponíveis
+    this.pontosRestantes = this.pontosIniciais + this.pontosExtras;
+    this.el.pontosRestantes.textContent = this.pontosRestantes;
+    
+    // Mostrar/ocultar container de bônus
+    if (this.pontosExtras > 0) {
+      this.el.bonusNivelContainer.style.display = 'block';
+      this.el.bonusPontos.textContent = this.pontosExtras;
+    } else {
+      this.el.bonusNivelContainer.style.display = 'none';
+    }
+    
+    // Recalcular pontos gastos
+    this.recalcularPontosRestantes();
+  },
+  
+  // Obter máximo permitido para um atributo
+  getMaximoAtributo: function(atributo) {
+    const bonusRacial = this.bonusRaciais[this.racaAtual];
+    
+    if (bonusRacial.tipo === 'fixo') {
+      // Raças com bônus fixos
+      return bonusRacial.atributos[atributo] ? this.maxAtributoComBonus : this.maxAtributoNormal;
+    } else if (bonusRacial.tipo === 'escolha' && this.racaAtual === 'humano') {
+      // Humanos escolhem 2 atributos
+      return this.bonusAtributosEscolhidos.includes(atributo) ? this.maxAtributoComBonus : this.maxAtributoNormal;
+    }
+    
+    return this.maxAtributoNormal;
+  },
+  
+  // Obter valor do bônus racial para um atributo
+  getBonusRacial: function(atributo) {
+    const bonusRacial = this.bonusRaciais[this.racaAtual];
+    
+    if (bonusRacial.tipo === 'fixo') {
+      return bonusRacial.atributos[atributo] || 0;
+    } else if (bonusRacial.tipo === 'escolha' && this.racaAtual === 'humano') {
+      return this.bonusAtributosEscolhidos.includes(atributo) ? 1 : 0;
+    }
+    
+    return 0;
+  },
+  
+  // Recalcular pontos restantes baseado nos atributos atuais
+  recalcularPontosRestantes: function() {
+    let pontosGastos = 0;
+    for (const atributo in this.atributos) {
+      pontosGastos += this.atributos[atributo];
+    }
+    
+    const totalDisponivel = this.pontosIniciais + this.pontosExtras;
+    this.pontosRestantes = totalDisponivel - pontosGastos;
+    this.el.pontosRestantes.textContent = this.pontosRestantes;
+    
+    this.atualizarBotoesAtributos();
+  },
+  
+  // Alterar valor do atributo
+  alterarAtributo: function(atributo, acao) {
+    const valorAtual = this.atributos[atributo];
+    const maxPermitido = this.getMaximoAtributo(atributo);
+    const bonusRacial = this.getBonusRacial(atributo);
+    const valorTotal = valorAtual + bonusRacial;
+    
+    if (acao === 'aumentar') {
+      if (this.pontosRestantes === 0 || valorTotal >= maxPermitido) return;
+      this.atributos[atributo]++;
+      this.pontosRestantes--;
+    } else if (acao === 'diminuir') {
+      if (valorAtual === 0) return;
+      this.atributos[atributo]--;
+      this.pontosRestantes++;
+    }
+    
+    this.atualizarDisplayAtributo(atributo);
+    this.atualizarBotoesAtributos();
+  },
+  
+  // Atualizar display do atributo
+  atualizarDisplayAtributo: function(atributo) {
+    const valorBase = this.atributos[atributo];
+    const bonus = this.getBonusRacial(atributo);
+    const max = this.getMaximoAtributo(atributo);
+    const valorTotal = valorBase + bonus;
+    
+    // Atualizar valor base
+    this.el.atributos[atributo].textContent = valorBase;
+    
+    // Atualizar display do bônus
+    if (bonus > 0) {
+      this.el.bonusAtributos[atributo].textContent = `(+${bonus})`;
+    } else {
+      this.el.bonusAtributos[atributo].textContent = '';
+    }
+    
+    // Atualizar display do máximo
+    this.el.maxAtributos[atributo].textContent = valorTotal >= max ? 'MAX' : '';
+    
+    this.el.pontosRestantes.textContent = this.pontosRestantes;
+  },
+  
+  // Atualizar todos os displays de atributos
+  atualizarDisplayAtributos: function() {
+    for (const atributo in this.atributos) {
+      this.atualizarDisplayAtributo(atributo);
+    }
+    this.atualizarBotoesAtributos();
+  },
+  
+  // Atualizar estado dos botões de atributos
+  atualizarBotoesAtributos: function() {
+    document.querySelectorAll('[data-atributo]').forEach(button => {
+      const atributo = button.dataset.atributo;
+      const acao = button.dataset.acao;
+      const valorBase = this.atributos[atributo];
+      const bonus = this.getBonusRacial(atributo);
+      const maxPermitido = this.getMaximoAtributo(atributo);
+      const valorTotal = valorBase + bonus;
+      
+      if (acao === 'aumentar') {
+        button.disabled = this.pontosRestantes === 0 || valorTotal >= maxPermitido;
+      } else if (acao === 'diminuir') {
+        button.disabled = valorBase === 0;
+      }
+    });
+  },
+  
+  // Calcular iluminação baseada no nível
+  calcularIluminacao: function(nivel) {
+    let iluminacao = 80 - (nivel - 1) * 2;
+    return Math.max(iluminacao, 10);
+  },
+  
+  // Atualizar display da iluminação
+  atualizarIluminacao: function() {
+    const nivel = parseInt(this.el.nivel.value) || 1;
+    const iluminacao = this.calcularIluminacao(nivel);
+    this.el.iluminacao.textContent = iluminacao + '%';
+  },
+  
+  // Mostrar perícias da origem selecionada
+  mostrarPericiasOrigem: function() {
+    const origem = this.el.origem.value;
+    const div = this.el.periciasOrigem;
+    
+    if (origem && this.periciasPorOrigem[origem]) {
+      div.innerHTML = `<strong>Perícias de Origem:</strong> ${this.periciasPorOrigem[origem].join(', ')}`;
+    } else {
+      div.textContent = 'Perícias de Origem: —';
+    }
+  },
+  
+  // Validar formulário
+  validarFormulario: function() {
+    // Validar origem
+    if (!this.el.origem.value) {
+      alert('Selecione uma origem.');
+      return false;
+    }
+    
+    // Validar bônus humano (se for humano)
+    if (this.racaAtual === 'humano') {
+      if (this.bonusAtributosEscolhidos.length !== 2) {
+        alert('Humano deve escolher exatamente 2 atributos para receber bônus racial.');
+        return false;
+      }
+    }
+    
+    // Validar pontos restantes
+    if (this.pontosRestantes > 0) {
+      if (!confirm(`Ainda restam ${this.pontosRestantes} ponto(s) não distribuído(s). Deseja continuar?`)) {
+        return false;
+      }
+    }
+    
+    return true;
+  },
+  
+  // Processar perícias extras
+  processarPericiasExtras: function() {
+    const texto = this.el.periciasExtras.value.trim();
+    if (!texto) return [];
+    
+    return texto.split(',')
+      .map(p => p.trim())
+      .filter(p => p.length > 0);
+  },
+  
+  // Criar objeto do personagem
+  criarObjetoPersonagem: function() {
+    const nivel = parseInt(this.el.nivel.value) || 1;
+    const bonusRacial = this.bonusRaciais[this.racaAtual];
+    
+    // Calcular valores totais (base + bônus)
+    const atributosTotais = {};
+    for (const atributo in this.atributos) {
+      const bonus = this.getBonusRacial(atributo);
+      atributosTotais[atributo] = this.atributos[atributo] + bonus;
+    }
+    
+    return {
+      nome: this.el.nome.value.trim() || 'Sem Nome',
+      raca: this.racaAtual,
+      classe: this.el.classe.value,
+      nivel: nivel,
+      iluminacao: parseInt(this.el.iluminacao.textContent),
+      origem: this.el.origem.value,
+      // Valores base (sem bônus)
+      forca: this.atributos.forca,
+      resistencia: this.atributos.resistencia,
+      carisma: this.atributos.carisma,
+      ideia: this.atributos.ideia,
+      destreza: this.atributos.destreza,
+      conexao: this.atributos.conexao,
+      // Valores totais (com bônus)
+      forcaTotal: atributosTotais.forca,
+      resistenciaTotal: atributosTotais.resistencia,
+      carismaTotal: atributosTotais.carisma,
+      ideiaTotal: atributosTotais.ideia,
+      destrezaTotal: atributosTotais.destreza,
+      conexaoTotal: atributosTotais.conexao,
+      // Bônus aplicados
+      bonusRacial: bonusRacial.tipo === 'escolha' ? this.bonusAtributosEscolhidos : bonusRacial.atributos,
+      pontosExtrasNivel: this.pontosExtras,
+      periciasOrigem: this.periciasPorOrigem[this.el.origem.value] || [],
+      periciasExtras: this.processarPericiasExtras(),
+      dataCriacao: new Date().toISOString(),
+      // Informações de progressão
+      proximoBonusNivel: Math.ceil(nivel / this.intervaloNivel) * this.intervaloNivel + 1,
+      pontosTotaisGastos: this.pontosIniciais + this.pontosExtras - this.pontosRestantes
+    };
+  },
+  
+  // Registrar personagem
+  registrarPersonagem: function() {
+    if (!this.validarFormulario()) return;
+    
+    const personagem = this.criarObjetoPersonagem();
+    
+    // Salvar no localStorage
+    this.salvarPersonagem(personagem);
+    
+    // Redirecionar
+    window.location.href = 'pos-criacao.html';
+  },
+  
+  // Salvar personagem (compatibilidade com sistema anterior)
+  salvarPersonagem: function(personagem) {
+    // Salvar como personagem atual
+    localStorage.setItem('personagemRPG', JSON.stringify(personagem));
+    
+    // Adicionar à lista de fichas (para compatibilidade com página anterior)
+    const fichas = JSON.parse(localStorage.getItem('fichasRPG')) || [];
+    fichas.push({
+      nome: personagem.nome,
+      vida: personagem.resistenciaTotal * 10 + 50 + (personagem.nivel * 5),
+      sanidade: 100 - (personagem.nivel * 5),
+      nivel: personagem.nivel,
+      classe: personagem.classe,
+      raca: personagem.raca
+    });
+    localStorage.setItem('fichasRPG', JSON.stringify(fichas));
+  }
+};
+
+// Inicializar sistema quando o DOM carregar
+document.addEventListener('DOMContentLoaded', () => {
+  SistemaPersonagem.init();
+});
+</script>
+
+</body>
+</html>

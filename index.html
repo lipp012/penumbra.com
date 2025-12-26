@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>ARQUIVOS // penumbra RPG</title>
+  <style>
+    body {
+      background-color: #000000;
+      color: #00ff66;
+      font-family: "Courier New", monospace;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: #00ccff;
+      text-decoration: underline;
+    }
+
+    a:hover {
+      color: #ff0033;
+    }
+
+    .container {
+      width: 760px;
+      margin: auto;
+      border: 2px solid #00ff66;
+      padding: 10px;
+      background-color: #020202;
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 1px dashed #00ff66;
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      margin: 5px 0;
+      font-size: 22px;
+      letter-spacing: 2px;
+    }
+
+    .warning {
+      background-color: #111;
+      border: 1px solid #ff0033;
+      padding: 8px;
+      color: #ff0033;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    nav {
+      border: 1px solid #00ff66;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    nav a {
+      display: block;
+      margin: 3px 0;
+    }
+
+    nav strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    section {
+      border: 1px solid #00ff66;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    section h2 {
+      font-size: 16px;
+      border-bottom: 1px solid #00ff66;
+      margin-bottom: 6px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 11px;
+      color: #666;
+      border-top: 1px dashed #00ff66;
+      padding-top: 6px;
+    }
+
+    .blink {
+      animation: blink 1s step-start infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .arquivo {
+      border: 1px solid #00ff66;
+      padding: 10px;
+      margin-top: 8px;
+      background: #0a0a0a;
+      position: relative;
+    }
+
+    .arquivo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .arquivo-nome {
+      color: #00ccff;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .arquivo-info {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 5px;
+    }
+
+    .arquivo-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin: 8px 0;
+      font-size: 11px;
+    }
+
+    .stat-item {
+      background: #111;
+      padding: 4px;
+      border: 1px dashed #333;
+      text-align: center;
+    }
+
+    .stat-label {
+      color: #ff9900;
+      font-size: 10px;
+    }
+
+    .stat-value {
+      color: #00ff66;
+      font-weight: bold;
+    }
+
+    .arquivo-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    button {
+      background: #000;
+      color: #00ccff;
+      border: 1px solid #00ccff;
+      font-family: "Courier New", monospace;
+      cursor: pointer;
+      padding: 6px 12px;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      color: #ff0033;
+      border-color: #ff0033;
+    }
+
+    .btn-danger {
+      color: #ff3333;
+      border-color: #ff3333;
+    }
+
+    .btn-danger:hover {
+      color: #ff0000;
+      border-color: #ff0000;
+      background: #330000;
+    }
+
+    .btn-success {
+      color: #00ff66;
+      border-color: #00ff66;
+    }
+
+    .btn-success:hover {
+      color: #00cc00;
+      border-color: #00cc00;
+      background: #003300;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px dashed #00ff66;
+      margin: 5px 0;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 2px;
+    }
+
+    .no-fichas {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-style: italic;
+    }
+
+    .delete-confirm {
+      background: #330000;
+      border: 1px solid #ff3333;
+      padding: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .delete-confirm p {
+      margin: 0 0 10px 0;
+      color: #ff6666;
+    }
+
+    .confirm-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .ficha-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ff0033;
+      color: #000;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #00ccff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>penumbra</h1>
+    <div class="blink">>>> ACESSO RESTRITO &lt;&lt;</div>
+  </header>
+
+  <div class="warning">
+    AVISO: As informações contidas neste sistema são classificadas.
+    O acesso não autorizado pode resultar em consequências severas.
+  </div>
+
+  <nav>
+    <strong>ÍNDICE</strong>
+    <a href="#sistema">Sobre o Sistema</a>
+    <a href="#racas">Raças Catalogadas</a>
+    <a href="#classes">Classes Operacionais</a>
+    <a href="#paranormal">O Paranormal</a>
+    <a href="#registros">Registros Perdidos</a>
+    <hr>
+    <a href="criacao_personagem.html">>>> CRIAÇÃO DE PERSONAGEM &lt;&lt;&lt;</a>
+    <a href="pos-criacao.html">>>> PÓS-CRIAÇÃO &lt;&lt;&lt;</a>
+    <a href="ficha-final.html">>>> FICHA FINAL &lt;&lt;&lt;</a>
+  </nav>
+
+  <section id="sistema">
+    <h2>Sobre o Sistema</h2>
+    <p>PENUMBRA — O RPG</p>
+    <p>PENUMBRA é um RPG de terror, ação e sobrevivência em um mundo onde a realidade já falhou. A normalidade não acabou de uma vez — ela apodreceu aos poucos, corroída por forças que não deveriam existir e por escolhas que nunca tiveram um final limpo. O que resta é um cenário instável, onde viver significa resistir, e resistir sempre cobra algo em troca.</p>
+    <!-- Restante do conteúdo mantido -->
+  </section>
+
+  <section id="racas">
+    <h2>Raças Catalogadas</h2>
+    <ul>
+      <li>Humanos</li>
+      <li>Carnisal</li>
+      <li>Descarnado</li>
+      <li>Morfo</li>
+      <li>Phoyka</li>
+    </ul>
+  </section>
+
+  <section id="classes">
+    <h2>Classes Operacionais</h2>
+    <!-- Conteúdo das classes mantido -->
+  </section>
+
+  <section id="paranormal">
+    <h2>O Opaco</h2>
+    <p>O paranormal não segue leis conhecidas.</p>
+  </section>
+
+  <section id="registros">
+    <h2>Registros Perdidos <span id="fichaCount" style="color:#00ccff; font-size:12px;"></span></h2>
+    <p>[ARQUIVO CORROMPIDO]</p>
+    
+    <div class="arquivo-actions" style="margin-bottom: 15px;">
+      <button onclick="mostrarFichas()" class="btn-success">📂 CARREGAR FICHAS</button>
+      <button onclick="limparTodasFichas()" class="btn-danger">🗑️ LIMPAR TODAS</button>
+      <button onclick="exportarTodasFichas()" class="btn-success">📄 EXPORTAR TODAS</button>
+    </div>
+    
+    <div id="listaFichas"></div>
+    
+    <div id="deleteConfirm" class="delete-confirm">
+      <p><strong>⚠️ CONFIRMAR EXCLUSÃO</strong></p>
+      <p>Tem certeza que deseja excluir a ficha: <span id="fichaParaExcluir">[NOME]</span>?</p>
+      <p style="font-size: 10px; color: #ff9999;">Esta ação não pode ser desfeita!</p>
+      <div class="confirm-buttons">
+        <button onclick="confirmarExclusao()" class="btn-danger">✅ CONFIRMAR EXCLUSÃO</button>
+        <button onclick="cancelarExclusao()">❌ CANCELAR</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Sistema RPG • Arquivos Iniciais • 1999–2003
+  </footer>
+
+</div>
+
+<script>
+// Sistema de Gerenciamento de Fichas
+const FichasManager = {
+  fichas: [],
+  fichaParaExcluir: null,
+  
+  // Inicializar
+  init: function() {
+    this.carregarFichas();
+    this.atualizarContador();
+  },
+  
+  // Carregar fichas do localStorage
+  carregarFichas: function() {
+    try {
+      // Carregar da lista principal de fichas
+      this.fichas = JSON.parse(localStorage.getItem("fichasRPG")) || [];
+      
+      // Se não houver fichas na lista principal, verificar se há ficha atual
+      if (this.fichas.length === 0) {
+        const fichaAtual = JSON.parse(localStorage.getItem("personagemRPG"));
+        const fichaFinal = JSON.parse(localStorage.getItem("fichaFinal"));
+        
+        if (fichaAtual || fichaFinal) {
+          // Criar uma ficha a partir dos dados atuais
+          const novaFicha = this.criarFichaDeDadosAtuais(fichaAtual, fichaFinal);
+          if (novaFicha) {
+            this.fichas.push(novaFicha);
+            this.salvarFichas();
+          }
+        }
+      }
+      
+      console.log("Fichas carregadas:", this.fichas.length);
+      return this.fichas;
+    } catch (error) {
+      console.error("Erro ao carregar fichas:", error);
+      this.fichas = [];
+      return [];
+    }
+  },
+  
+  // Criar ficha a partir dos dados atuais
+  criarFichaDeDadosAtuais: function(dadosCriacao, dadosFichaFinal) {
+    if (!dadosCriacao && !dadosFichaFinal) return null;
+    
+    const dados = { ...dadosCriacao, ...dadosFichaFinal };
+    
+    return {
+      id: Date.now(),
+      nome: dados.nome || "Personagem Sem Nome",
+      raca: dados.raca || "Desconhecida",
+      classe: dados.classe || "Desconhecida",
+      origem: dados.origem || "Desconhecida",
+      nivel: dados.nivel || 1,
+      vida: dados.vida || 10,
+      sanidade: dados.sanidade || 10,
+      esforco: dados.esforco || 5,
+      forca: dados.forca || dados.atributos?.forca || 10,
+      resistencia: dados.resistencia || dados.atributos?.resistencia || 10,
+      carisma: dados.carisma || dados.atributos?.carisma || 10,
+      ideia: dados.ideia || dados.atributos?.ideia || 10,
+      destreza: dados.destreza || dados.atributos?.destreza || 10,
+      conexao: dados.conexao || dados.atributos?.conexao || 10,
+      pericias: dados.periciasTodas || dados.pericias || [],
+      dataCriacao: new Date().toISOString(),
+      dadosCompletos: dados
+    };
+  },
+  
+  // Salvar fichas no localStorage
+  salvarFichas: function() {
+    localStorage.setItem("fichasRPG", JSON.stringify(this.fichas));
+    this.atualizarContador();
+  },
+  
+  // Atualizar contador de fichas
+  atualizarContador: function() {
+    const countElement = document.getElementById("fichaCount");
+    if (countElement) {
+      countElement.textContent = `(${this.fichas.length})`;
+    }
+    
+    // Atualizar texto da seção de registros
+    const registrosSection = document.querySelector('#registros p');
+    if (registrosSection) {
+      if (this.fichas.length === 0) {
+        registrosSection.innerHTML = '[ARQUIVO CORROMPIDO]';
+      } else {
+        registrosSection.innerHTML = `[${this.fichas.length} REGISTRO(S) RECUPERADO(S)]`;
+      }
+    }
+  },
+  
+  // Mostrar todas as fichas
+  mostrarFichas: function() {
+    const area = document.getElementById("listaFichas");
+    
+    // Limpar área
+    area.innerHTML = "";
+    
+    // Verificar se há fichas
+    if (this.fichas.length === 0) {
+      area.innerHTML = `
+        <div class="no-fichas">
+          <p>NENHUM REGISTRO ENCONTRADO</p>
+          <p style="font-size: 10px; color: #666; margin-top: 10px;">
+            Crie um personagem na aba "CRIAÇÃO DE PERSONAGEM"
+          </p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Adicionar cada ficha
+    this.fichas.forEach((ficha, index) => {
+      area.appendChild(this.criarElementoFicha(ficha, index));
+    });
+  },
+  
+  // Criar elemento HTML para uma ficha
+  criarElementoFicha: function(ficha, index) {
+    const div = document.createElement("div");
+    div.className = "arquivo";
+    div.id = `ficha-${ficha.id || index}`;
+    
+    // Formatar data
+    let dataFormatada = "Data desconhecida";
+    if (ficha.dataCriacao) {
+      const data = new Date(ficha.dataCriacao);
+      dataFormatada = data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR').slice(0,5);
+    }
+    
+    // Contar perícias
+    const numPericias = Array.isArray(ficha.pericias) ? ficha.pericias.length : 0;
+    
+    div.innerHTML = `
+      <div class="arquivo-header">
+        <div class="arquivo-nome">${ficha.nome || "REGISTRO #" + (index + 1)}</div>
+        <span style="font-size: 10px; color: #666;">ID: ${ficha.id || "N/A"}</span>
+      </div>
+      
+      <div class="arquivo-info">
+        <strong>${ficha.raca || "???"}</strong> | 
+        <strong>${ficha.classe || "???"}</strong> | 
+        <strong>${ficha.origem || "???"}</strong> | 
+        Nível: <strong>${ficha.nivel || 1}</strong>
+      </div>
+      
+      <div class="arquivo-stats">
+        <div class="stat-item">
+          <div class="stat-label">VIDA</div>
+          <div class="stat-value">${ficha.vida || "?"}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">SANIDADE</div>
+          <div class="stat-value">${ficha.sanidade || "?"}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">ESFORÇO</div>
+          <div class="stat-value">${ficha.esforco || "?"}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">FORÇA</div>
+          <div class="stat-value">${ficha.forca || "?"}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">RESIST.</div>
+          <div class="stat-value">${ficha.resistencia || "?"}</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">PERÍCIAS</div>
+          <div class="stat-value">${numPericias}</div>
+        </div>
+      </div>
+      
+      <div class="arquivo-info" style="margin-top: 8px;">
+        <small>Criado: ${dataFormatada}</small>
+      </div>
+      
+      <div class="arquivo-actions">
+        <button onclick="FichasManager.carregarFicha(${index})" class="btn-success">▶️ CARREGAR</button>
+        <button onclick="FichasManager.exportarFicha(${index})">📄 EXPORTAR</button>
+        <button onclick="FichasManager.solicitarExclusao(${index})" class="btn-danger">🗑️ EXCLUIR</button>
+      </div>
+    `;
+    
+    return div;
+  },
+  
+  // Carregar uma ficha específica
+  carregarFicha: function(index) {
+    if (index < 0 || index >= this.fichas.length) {
+      alert("Índice de ficha inválido!");
+      return;
+    }
+    
+    const ficha = this.fichas[index];
+    
+    // Salvar a ficha atual nos dados principais
+    if (ficha.dadosCompletos) {
+      // Salvar nos três locais para compatibilidade
+      localStorage.setItem("personagemRPG", JSON.stringify(ficha.dadosCompletos));
+      
+      // Criar dados de pós-criação
+      const posCriacaoData = {
+        nome: ficha.nome,
+        descricao: ficha.dadosCompletos.descricao || "",
+        raca: ficha.raca,
+        classe: ficha.classe,
+        origem: ficha.origem,
+        nivel: ficha.nivel,
+        periciasOrigem: ficha.dadosCompletos.periciasAutomaticas || [],
+        itens: ficha.dadosCompletos.itens || "",
+        habilidades: ficha.dadosCompletos.habilidades || "",
+        rituais: ficha.dadosCompletos.rituais || ""
+      };
+      localStorage.setItem("posCriacaoData", JSON.stringify(posCriacaoData));
+      
+      // Salvar ficha final
+      localStorage.setItem("fichaFinal", JSON.stringify(ficha.dadosCompletos));
+    } else {
+      // Se não tiver dados completos, criar estrutura básica
+      const dadosBasicos = {
+        nome: ficha.nome,
+        raca: ficha.raca,
+        classe: ficha.classe,
+        origem: ficha.origem,
+        nivel: ficha.nivel,
+        forca: ficha.forca,
+        resistencia: ficha.resistencia,
+        carisma: ficha.carisma,
+        ideia: ficha.ideia,
+        destreza: ficha.destreza,
+        conexao: ficha.conexao,
+        vida: ficha.vida,
+        sanidade: ficha.sanidade,
+        esforco: ficha.esforco,
+        periciasTodas: ficha.pericias || []
+      };
+      
+      localStorage.setItem("personagemRPG", JSON.stringify(dadosBasicos));
+      localStorage.setItem("fichaFinal", JSON.stringify(dadosBasicos));
+    }
+    
+    alert(`Ficha "${ficha.nome}" carregada com sucesso!`);
+    
+    // Redirecionar para a ficha final
+    setTimeout(() => {
+      window.location.href = "ficha-final.html";
+    }, 500);
+  },
+  
+  // Exportar uma ficha específica
+  exportarFicha: function(index) {
+    if (index < 0 || index >= this.fichas.length) {
+      alert("Índice de ficha inválido!");
+      return;
+    }
+    
+    const ficha = this.fichas[index];
+    const texto = this.gerarTextoFicha(ficha);
+    
+    const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ficha_${ficha.nome.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    alert(`Ficha "${ficha.nome}" exportada com sucesso!`);
+  },
+  
+  // Gerar texto para exportação
+  gerarTextoFicha: function(ficha) {
+    const periciasLista = Array.isArray(ficha.pericias) ? ficha.pericias : [];
+    
+    return `FICHA DE PERSONAGEM - PENUMBRA RPG
+===========================================
+
+NOME: ${ficha.nome || "Desconhecido"}
+RAÇA: ${ficha.raca || "Desconhecida"}
+CLASSE: ${ficha.classe || "Desconhecida"}
+ORIGEM: ${ficha.origem || "Desconhecida"}
+NÍVEL: ${ficha.nivel || 1}
+
+STATUS
+------
+Vida: ${ficha.vida || "?"}
+Sanidade: ${ficha.sanidade || "?"}
+Esforço: ${ficha.esforco || "?"}
+
+ATRIBUTOS
+---------
+Força: ${ficha.forca || "?"}
+Resistência: ${ficha.resistencia || "?"}
+Carisma: ${ficha.carisma || "?"}
+Ideia: ${ficha.ideia || "?"}
+Destreza: ${ficha.destreza || "?"}
+Conexão: ${ficha.conexao || "?"}
+
+PERÍCIAS (${periciasLista.length})
+---------
+${periciasLista.map(p => `• ${p}`).join('\n') || "Nenhuma perícia registrada"}
+
+===========================================
+Exportado em: ${new Date().toLocaleString()}
+ID do Registro: ${ficha.id || "N/A"}`;
+  },
+  
+  // Solicitar exclusão de uma ficha
+  solicitarExclusao: function(index) {
+    if (index < 0 || index >= this.fichas.length) {
+      alert("Índice de ficha inválido!");
+      return;
+    }
+    
+    const ficha = this.fichas[index];
+    this.fichaParaExcluir = { index, ficha };
+    
+    // Mostrar confirmação
+    document.getElementById("fichaParaExcluir").textContent = ficha.nome;
+    document.getElementById("deleteConfirm").style.display = "block";
+    
+    // Scroll para a confirmação
+    document.getElementById("deleteConfirm").scrollIntoView({ behavior: 'smooth' });
+  },
+  
+  // Confirmar exclusão
+  confirmarExclusao: function() {
+    if (!this.fichaParaExcluir) return;
+    
+    const { index, ficha } = this.fichaParaExcluir;
+    
+    // Remover ficha do array
+    this.fichas.splice(index, 1);
+    
+    // Salvar alterações
+    this.salvarFichas();
+    
+    // Atualizar display
+    this.mostrarFichas();
+    
+    // Esconder confirmação
+    this.cancelarExclusao();
+    
+    // Mostrar mensagem
+    alert(`Ficha "${ficha.nome}" excluída permanentemente.`);
+  },
+  
+  // Cancelar exclusão
+  cancelarExclusao: function() {
+    this.fichaParaExcluir = null;
+    document.getElementById("deleteConfirm").style.display = "none";
+  },
+  
+  // Limpar todas as fichas
+  limparTodasFichas: function() {
+    if (this.fichas.length === 0) {
+      alert("Não há fichas para limpar!");
+      return;
+    }
+    
+    if (confirm(`Tem certeza que deseja excluir TODAS as ${this.fichas.length} fichas?\n\nEsta ação não pode ser desfeita!`)) {
+      this.fichas = [];
+      this.salvarFichas();
+      this.mostrarFichas();
+      alert("Todas as fichas foram excluídas permanentemente.");
+    }
+  },
+  
+  // Exportar todas as fichas
+  exportarTodasFichas: function() {
+    if (this.fichas.length === 0) {
+      alert("Não há fichas para exportar!");
+      return;
+    }
+    
+    const textos = this.fichas.map((ficha, index) => {
+      return `=== FICHA ${index + 1} de ${this.fichas.length} ===\n` +
+             this.gerarTextoFicha(ficha) +
+             `\n\n${'='.repeat(50)}\n\n`;
+    });
+    
+    const textoCompleto = `ARQUIVO COMPLETO DE FICHAS - PENUMBRA RPG
+===========================================\n\n` + textos.join('');
+    
+    const blob = new Blob([textoCompleto], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `arquivo_completo_fichas_${Date.now()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    alert(`${this.fichas.length} fichas exportadas com sucesso!`);
+  }
+};
+
+// Funções globais para acesso via HTML
+function mostrarFichas() {
+  FichasManager.mostrarFichas();
+}
+
+function limparTodasFichas() {
+  FichasManager.limparTodasFichas();
+}
+
+function exportarTodasFichas() {
+  FichasManager.exportarTodasFichas();
+}
+
+function confirmarExclusao() {
+  FichasManager.confirmarExclusao();
+}
+
+function cancelarExclusao() {
+  FichasManager.cancelarExclusao();
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+  FichasManager.init();
+  
+  // Verificar se deve mostrar fichas automaticamente
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('show') === 'fichas') {
+    setTimeout(() => {
+      FichasManager.mostrarFichas();
+      document.getElementById('registros').scrollIntoView({ behavior: 'smooth' });
+    }, 500);
+  }
+  
+  // Adicionar botão para salvar ficha atual
+  const nav = document.querySelector('nav');
+  if (nav) {
+    const saveButton = document.createElement('a');
+    saveButton.href = "#";
+    saveButton.innerHTML = ">>> SALVAR FICHA ATUAL &lt;&lt;&lt;";
+    saveButton.style.color = "#00ff66";
+    saveButton.style.marginTop = "10px";
+    saveButton.style.display = "block";
+    saveButton.onclick = function(e) {
+      e.preventDefault();
+      salvarFichaAtual();
+    };
+    nav.appendChild(saveButton);
+  }
+});
+
+// Função para salvar ficha atual na lista
+function salvarFichaAtual() {
+  try {
+    const dadosCriacao = JSON.parse(localStorage.getItem("personagemRPG"));
+    const fichaFinal = JSON.parse(localStorage.getItem("fichaFinal"));
+    
+    if (!dadosCriacao && !fichaFinal) {
+      alert("Nenhuma ficha atual encontrada para salvar!");
+      return;
+    }
+    
+    const novaFicha = FichasManager.criarFichaDeDadosAtuais(dadosCriacao, fichaFinal);
+    
+    if (novaFicha) {
+      // Verificar se já existe uma ficha com mesmo nome
+      const existe = FichasManager.fichas.some(f => 
+        f.nome === novaFicha.nome && f.raca === novaFicha.raca
+      );
+      
+      if (existe && !confirm(`Já existe uma ficha com nome "${novaFicha.nome}".\nDeseja substituí-la?`)) {
+        return;
+      }
+      
+      // Remover ficha existente se necessário
+      if (existe) {
+        const index = FichasManager.fichas.findIndex(f => 
+          f.nome === novaFicha.nome && f.raca === novaFicha.raca
+        );
+        FichasManager.fichas.splice(index, 1);
+      }
+      
+      // Adicionar nova ficha
+      FichasManager.fichas.push(novaFicha);
+      FichasManager.salvarFichas();
+      
+      alert(`Ficha "${novaFicha.nome}" salva na lista de arquivos!`);
+      
+      // Atualizar display
+      FichasManager.mostrarFichas();
+    }
+  } catch (error) {
+    console.error("Erro ao salvar ficha:", error);
+    alert("Erro ao salvar ficha atual!");
+  }
+}
+</script>
+
+</body>
+</html>
