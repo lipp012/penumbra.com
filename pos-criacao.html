@@ -2,760 +2,704 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>PÓS-CRIAÇÃO // STATUS DO PERSONAGEM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PÓS-CRIAÇÃO // STATUS DO AGENTE</title>
+  
   <style>
+    /* --- VARIÁVEIS DE TEMA (Fácil de mudar cores aqui) --- */
+    :root {
+      --bg-color: #050505;
+      --panel-bg: #0a0a0a;
+      --primary-color: #00ff66;       /* Verde Matrix */
+      --secondary-color: #00ccff;     /* Azul Neon */
+      --accent-color: #ffcc00;        /* Amarelo */
+      --danger-color: #ff0033;        /* Vermelho Erro */
+      --text-color: #e0e0e0;
+      --border-radius: 4px;
+      --font-mono: "Courier New", monospace;
+    }
+
+    /* --- RESET E BASE --- */
+    * { box-sizing: border-box; }
+    
     body {
       background-color: #000;
-      color: #00ff66;
-      font-family: "Courier New", monospace;
+      color: var(--primary-color);
+      font-family: var(--font-mono);
       margin: 0;
-      padding: 0;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.4;
     }
+
+    /* --- LAYOUT --- */
     .container {
-      width: 760px;
-      margin: auto;
-      border: 2px solid #00ff66;
-      padding: 10px;
-      background-color: #020202;
+      max-width: 900px;
+      margin: 0 auto;
+      border: 1px solid var(--primary-color);
+      padding: 20px;
+      background-color: var(--bg-color);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.1);
     }
-    h1, h2 { 
-      border-bottom: 1px solid #00ff66;
-      margin-top: 15px;
+
+    /* --- TIPOGRAFIA --- */
+    h1, h2, h3 {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0;
     }
-    h1 { 
-      margin-top: 0; 
+
+    h1 {
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 10px;
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
     }
-    .warning { 
-      color: #ff0033; 
-      font-size: 12px; 
-      margin-bottom: 10px; 
-      border: 1px solid #ff0033;
-      padding: 8px;
+
+    h2 {
+      border-left: 4px solid var(--secondary-color);
+      padding-left: 10px;
+      font-size: 1.1rem;
+      margin-top: 30px;
+      color: var(--text-color);
     }
-    .status { 
-      border: 1px solid #00ff66; 
-      padding: 10px; 
-      margin-bottom: 10px; 
-    }
-    .status-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    label { 
-      display: block; 
-      margin-top: 6px; 
-      color: #00ccff;
-    }
-    .atributo-info {
-      font-size: 11px;
-      color: #ff9900;
-      margin-left: 10px;
-    }
-    input { 
-      width: 100%; 
-      background: #000; 
-      color: #00ff66; 
-      border: 1px solid #00ff66; 
-      font-family: "Courier New", monospace; 
-      padding: 4px;
-    }
-    input[readonly] {
-      background: #111;
-      color: #00ff66;
-    }
-    .pericia { 
-      margin: 6px 0; 
-      padding: 8px;
-      border-left: 2px solid #00ccff;
-      background: #0a0a0a;
-    }
-    .pericia-automatica { 
-      margin: 6px 0; 
-      padding: 8px;
-      border-left: 3px solid #ffcc00;
-      background: #1a1a00;
-      position: relative;
-    }
-    .pericia-automatica::before {
-      content: "✓ AUTOMÁTICA";
-      position: absolute;
-      top: -8px;
-      right: 5px;
-      font-size: 9px;
-      color: #ffcc00;
-      background: #1a1a00;
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
-    .origem { 
-      margin: 6px 0; 
-      color: #ffcc00;
-      padding: 4px;
-      border-left: 2px solid #ffcc00;
-    }
-    button { 
-      background: #000; 
-      color: #00ccff; 
-      border: 1px solid #00ccff; 
-      font-family: "Courier New", monospace; 
-      cursor: pointer; 
-      margin: 10px 10px 0 0; 
-      padding: 8px 16px;
-    }
-    button:hover { 
-      color: #ff0033; 
-      border-color: #ff0033; 
-    }
-    .pontos { 
-      color: #00ccff; 
-      margin-bottom: 10px; 
-      padding: 10px;
-      border: 1px dashed #00ccff;
-      background: #0a0a0a;
-    }
-    .info-box {
-      background: #1a1a00;
-      border: 1px solid #ff9900;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 12px;
-    }
-    .stat-value {
-      font-size: 18px;
-      color: #ffcc00;
-      margin-left: 10px;
-    }
-    .pericia-bonus {
-      color: #ff9900;
-      font-size: 10px;
-      margin-left: 5px;
-      font-style: italic;
-    }
-    .pericia-locked {
-      opacity: 0.8;
-    }
-    .pericia-locked input[type="checkbox"] {
-      cursor: not-allowed;
-    }
-    .debug-info {
-      background: #111;
-      border: 1px dashed #666;
-      padding: 8px;
-      margin: 10px 0;
-      font-size: 10px;
-      color: #999;
-      display: none;
-    }
-    .pericia-container {
-      max-height: 400px;
-      overflow-y: auto;
+
+    /* --- PAINÉIS E CAIXAS --- */
+    .info-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      background: var(--panel-bg);
       border: 1px solid #333;
       padding: 10px;
-      margin: 10px 0;
+      margin-bottom: 20px;
+      color: var(--text-color);
     }
-    .pericia-header {
+
+    .info-item strong { color: var(--secondary-color); }
+
+    .warning-box {
+      color: var(--danger-color);
+      border: 1px solid var(--danger-color);
+      background: rgba(255, 0, 51, 0.1);
+      padding: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    /* --- GRID DE ATRIBUTOS --- */
+    .grid-atributos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #111;
+      padding: 10px;
+      border: 1px solid #333;
+      text-align: center;
+    }
+
+    .stat-label { color: var(--secondary-color); font-weight: bold; display: block; }
+    .stat-detail { font-size: 0.75rem; color: #666; display: block; margin: 5px 0; }
+    
+    input[type="number"], input[type="text"] {
+      width: 100%;
+      background: #000;
+      border: 1px solid #444;
+      color: var(--primary-color);
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 5px;
+    }
+    
+    input[readonly] { cursor: default; }
+    input:focus { outline: none; border-color: var(--primary-color); }
+
+    /* STATUS DERIVADOS (PV, SAN, PE) */
+    .derived-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px dashed var(--primary-color);
+    }
+
+    .derived-input {
+      color: var(--accent-color) !important;
+      font-weight: bold;
+      border-color: var(--accent-color) !important;
+    }
+
+    /* --- SISTEMA DE PERÍCIAS --- */
+    .points-panel {
+      background: var(--panel-bg);
+      border: 1px dashed var(--secondary-color);
+      padding: 15px;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10; /* Fica no topo ao rolar */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+    }
+
+    .progress-wrapper {
+      margin-top: 10px;
+      background: #222;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--secondary-color);
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s;
+    }
+
+    .progress-bar.full { background: var(--danger-color); }
+    
+    .status-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .msg-feedback {
+      color: var(--danger-color);
+      font-size: 0.85rem;
+      height: 1.2rem; 
+      margin-top: 5px;
+      font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .msg-feedback.visible { opacity: 1; }
+
+    /* LISTA DE PERÍCIAS */
+    .pericia-list-container {
+      max-height: 450px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      padding: 5px;
+      background: #080808;
+    }
+
+    .pericia-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 5px;
+      padding: 10px;
+      margin-bottom: 4px;
+      background: #121212;
+      border-left: 3px solid transparent;
+      transition: background 0.2s;
     }
-    .pericia-nome {
+
+    .pericia-item:hover { background: #1a1a1a; }
+    
+    /* Estados das Perícias */
+    .pericia-item.selected {
+      border-left-color: var(--secondary-color);
+      background: rgba(0, 204, 255, 0.05);
+    }
+    .pericia-item.automatic {
+      border-left-color: var(--accent-color);
+      background: rgba(255, 204, 0, 0.05);
+    }
+    .pericia-item.locked { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+
+    .pericia-content { flex: 1; }
+    .p-name { font-weight: bold; color: var(--text-color); font-size: 1rem; }
+    .p-attr { font-size: 0.7rem; background: #333; padding: 2px 4px; border-radius: 3px; margin-left: 8px; color: #aaa; text-transform: uppercase;}
+    .p-desc { font-size: 0.8rem; color: #777; margin-top: 4px; display: block; }
+
+    /* Checkbox Customizado */
+    .checkbox-wrapper { display: flex; align-items: center; gap: 10px; }
+    .custom-cb {
+      width: 20px; height: 20px;
+      border: 1px solid #555;
+      background: #000;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .custom-cb.checked { background: var(--secondary-color); border-color: var(--secondary-color); color: #000; }
+    .custom-cb.auto { background: var(--accent-color); border-color: var(--accent-color); color: #000; cursor: default; }
+
+    /* --- BOTÕES --- */
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #333;
+    }
+
+    button {
+      background: transparent;
+      color: var(--secondary-color);
+      border: 1px solid var(--secondary-color);
+      padding: 12px 24px;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      cursor: pointer;
+      text-transform: uppercase;
       font-weight: bold;
-      color: #00ccff;
+      transition: all 0.2s;
     }
-    .pericia-atributo {
-      font-size: 11px;
-      color: #ff9900;
-      background: #1a1a00;
-      padding: 2px 6px;
-      border-radius: 3px;
+
+    button:hover {
+      background: var(--secondary-color);
+      color: #000;
+      box-shadow: 0 0 10px var(--secondary-color);
     }
-    .pericia-desc {
-      font-size: 11px;
-      color: #aaa;
-      margin-top: 3px;
+
+    button.btn-back { color: var(--danger-color); border-color: var(--danger-color); }
+    button.btn-back:hover { background: var(--danger-color); color: #fff; box-shadow: 0 0 10px var(--danger-color); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .derived-stats { grid-template-columns: 1fr; }
+      .actions { flex-direction: column-reverse; }
+      button { width: 100%; }
+      .status-text { flex-direction: column; align-items: flex-start; gap: 5px; }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <h1>Status do Personagem</h1>
+  <div class="warning-box">⚠ DADOS CALCULADOS AUTOMATICAMENTE. EVITE EDIÇÃO MANUAL.</div>
 
-  <h1>PÓS-CRIAÇÃO DO PERSONAGEM</h1>
-
-  <div class="warning">
-    ESTES VALORES SÃO CALCULADOS APÓS A CRIAÇÃO. ALTERAÇÕES MANUAIS NÃO SÃO RECOMENDADAS.
+  <div class="info-bar">
+    <span class="info-item"><strong>Agente:</strong> <span id="viewNome">...</span></span>
+    <span class="info-item"><strong>Origem:</strong> <span id="viewOrigem">...</span></span>
+    <span class="info-item"><strong>Classe:</strong> <span id="viewClasse">...</span></span>
+    <span class="info-item"><strong>Nível:</strong> <span id="viewNivel">...</span></span>
   </div>
 
-  <div class="info-box">
-    <strong>Personagem:</strong> <span id="charName">[NÃO CARREGADO]</span> | 
-    <strong>Raça:</strong> <span id="charRace">[NÃO CARREGADO]</span> | 
-    <strong>Classe:</strong> <span id="charClass">[NÃO CARREGADO]</span> | 
-    <strong>Nível:</strong> <span id="charLevel">[NÃO CARREGADO]</span> |
-    <strong>Origem:</strong> <span id="charOrigem">[NÃO CARREGADO]</span>
+  <h2>1. Atributos & Derivados</h2>
+  <div class="grid-atributos" id="gridAtributos">
+    </div>
+
+  <div class="derived-stats">
+    <div class="stat-card">
+      <label class="stat-label">PV (Vida)</label>
+      <input type="text" id="pv" class="derived-input" readonly>
+      <span class="stat-detail">10 + (Força + Res*2)</span>
+    </div>
+    <div class="stat-card">
+      <label class="stat-label">SAN (Sanidade)</label>
+      <input type="text" id="san" class="derived-input" readonly>
+      <span class="stat-detail">5 + (Conexão + Ideia*2)</span>
+    </div>
+    <div class="stat-card">
+      <label class="stat-label">PE (Esforço)</label>
+      <input type="text" id="pe" class="derived-input" readonly>
+      <span class="stat-detail">5 + Res + Conexão</span>
+    </div>
   </div>
 
-  <h2>Status Calculados</h2>
-  <div class="status">
-    <div class="status-grid">
+  <h2>2. Treinamento de Perícias</h2>
+  
+  <div class="points-panel">
+    <div class="status-text">
       <div>
-        <label>Força
-          <span class="atributo-info" id="forcaInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="forca" readonly>
+        <strong>PONTOS DISPONÍVEIS:</strong> 
+        <span id="displayPontos" style="font-size: 1.4rem; color: var(--primary-color);">0</span>
       </div>
-      <div>
-        <label>Resistência
-          <span class="atributo-info" id="resistenciaInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="resistencia" readonly>
-      </div>
-      <div>
-        <label>Carisma
-          <span class="atributo-info" id="carismaInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="carisma" readonly>
-      </div>
-      <div>
-        <label>Ideia
-          <span class="atributo-info" id="ideiaInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="ideia" readonly>
-      </div>
-      <div>
-        <label>Destreza
-          <span class="atributo-info" id="destrezaInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="destreza" readonly>
-      </div>
-      <div>
-        <label>Conexão
-          <span class="atributo-info" id="conexaoInfo">(Base: 0 + Bônus: 0 = Total: 0)</span>
-        </label>
-        <input type="number" id="conexao" readonly>
+      <div style="font-size: 0.8rem; color: #888;">
+        Base (<span id="txtBase">0</span>) + Origem (<span id="txtOrigem">0</span>) + Nível (<span id="txtNivel">0</span>)
       </div>
     </div>
     
-    <div style="margin-top: 15px; border-top: 1px dashed #00ff66; padding-top: 10px;">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-        <div>
-          <label>Vida Máxima</label>
-          <input type="text" id="vida" readonly>
-        </div>
-        <div>
-          <label>Sanidade Máxima</label>
-          <input type="text" id="sanidade" readonly>
-        </div>
-        <div>
-          <label>Pontos de Esforço</label>
-          <input type="text" id="esforco" readonly>
-        </div>
-      </div>
+    <div class="progress-wrapper">
+      <div class="progress-bar" id="progressBar"></div>
     </div>
+    <div id="feedbackMsg" class="msg-feedback"></div>
   </div>
 
-  <h2>Perícias do Personagem</h2>
-  <div class="pontos">
-    <strong>Sistema de Pontos de Perícia:</strong><br>
-    • Base: <span id="pontosBasePericia">2</span> pontos<br>
-    • Bônus de Origem: <span id="pontosBonusOrigem">2</span> pontos<br>
-    • Bônus por Nível (<span id="nivelPericia">1</span>): <span id="pontosBonusNivel">0</span> pontos<br>
-    • <strong>Total Disponível:</strong> <span id="pontosPericiaTotal">4</span> pontos<br>
-    • <strong>Já Gastos:</strong> <span id="pontosPericiaGastos">0</span> pontos<br>
-    • <strong>Restantes para Escolher:</strong> <span id="pontosPericia">4</span> pontos
+  <div class="pericia-list-container" id="listaPericias">
+    </div>
+
+  <div class="actions">
+    <button class="btn-back" id="btnVoltar">Voltar</button>
+    <button id="btnSalvar">Salvar & Finalizar</button>
   </div>
-
-  <div class="info-box">
-    <strong>INSTRUÇÕES:</strong> As perícias marcadas com <span style="color:#ffcc00;">✓ AUTOMÁTICA</span> são <strong>obrigatórias da sua origem</strong> e já estão incluídas no personagem. Use seus pontos para selecionar perícias adicionais da lista abaixo.
-  </div>
-
-  <div class="pericia-container" id="periciasContainer">
-    <!-- As perícias serão renderizadas aqui -->
-  </div>
-
-  <button onclick="salvarPericias()">Salvar Perícias</button>
-  <button onclick="irParaFichaFinal()">IR PARA FICHA FINALIZADA</button>
-  <button onclick="voltarParaCriacao()">VOLTAR PARA CRIAÇÃO</button>
-
 </div>
 
 <script>
-const SistemaPosCriacao = {
-  dados: null,
-  pontosPericiaDisponiveis: 4,
-  periciasSelecionadas: [],
-  periciasOrigemAutomaticas: [],
-  
-  // Configurações
+/**
+ * LÓGICA DO SISTEMA (MODULAR)
+ */
+const App = {
+  // Configurações do RPG
   config: {
-    pontosPericiaBase: 2,
-    pontosBonusOrigem: 2,
-    bonusPericiaPorNivel: 5,
-    
-    vidaBase: 10,
-    vidaPorForca: 5,
-    vidaPorResistencia: 1,
-    sanidadeBase: 10,
-    sanidadePorIdeia: 3,
-    sanidadePorConexao: 1,
-    esforcoBase: 5,
-    esforcoPorForca: 1,
-    bonusVidaPorNivel: 2,
-    bonusSanidadePorNivel: 1
+    pontosBase: 2,
+    pontosOrigem: 2,
+    divisorNivel: 5,
+    atributos: ['forca', 'resistencia', 'carisma', 'ideia', 'destreza', 'conexao'],
+    // Lista completa de perícias
+    pericias: [
+      { id: "pesquisa", nome: "Pesquisa", atributo: "Ideia", desc: "Buscar dados e pistas.", origem: "academico" },
+      { id: "conhecimento", nome: "Conhecimento", atributo: "Ideia", desc: "Cultura geral e ciências.", origem: "academico" },
+      { id: "investigacao", nome: "Investigação", atributo: "Ideia", desc: "Analisar cenas de crime.", origem: "investigador" },
+      { id: "percepcao", nome: "Percepção", atributo: "Ideia", desc: "Notar detalhes e perigos.", origem: "investigador" },
+      { id: "luta", nome: "Luta", atributo: "Força", desc: "Combate corpo-a-corpo.", origem: "militar" },
+      { id: "tatica", nome: "Tática", atributo: "Ideia", desc: "Estratégia de combate.", origem: "militar" },
+      { id: "persuasao", nome: "Persuasão", atributo: "Carisma", desc: "Convencer e negociar.", origem: "civil" },
+      { id: "intuicao", nome: "Intuição", atributo: "Ideia", desc: "Sentir intenções.", origem: "civil" },
+      { id: "ocultismo", nome: "Ocultismo", atributo: "Conexao", desc: "Conhecimento do paranormal.", origem: "cultista" },
+      { id: "enganacao", nome: "Enganação", atributo: "Carisma", desc: "Mentir e disfarçar.", origem: "cultista" },
+      // Gerais (Origem null)
+      { id: "atletismo", nome: "Atletismo", atributo: "Força", desc: "Correr, pular, escalar.", origem: null },
+      { id: "sobrevivencia", nome: "Sobrevivência", atributo: "Resistência", desc: "Rastrear e resistir ao ambiente.", origem: null },
+      { id: "vontade", nome: "Vontade", atributo: "Resistência", desc: "Resistência mental.", origem: null },
+      { id: "diplomacia", nome: "Diplomacia", atributo: "Carisma", desc: "Etiqueta e acordos.", origem: null },
+      { id: "furtividade", nome: "Furtividade", atributo: "Destreza", desc: "Mover-se sem ser visto.", origem: null },
+      { id: "pontaria", nome: "Pontaria", atributo: "Destreza", desc: "Armas de fogo e arremesso.", origem: null },
+      { id: "medicina", nome: "Medicina", atributo: "Ideia", desc: "Primeiros socorros.", origem: null },
+      { id: "tecnologia", nome: "Tecnologia", atributo: "Ideia", desc: "Computadores e dispositivos.", origem: null },
+    ]
   },
-  
-  // TODAS AS PERÍCIAS DO SISTEMA
-  todasPericias: [
-    // Acadêmico
-    {nome: "Pesquisa", atributo: "Ideia", descricao: "Encontrar informações em fontes confiáveis", origem: "academico"},
-    {nome: "Conhecimento", atributo: "Ideia", descricao: "Saber sobre diversos assuntos acadêmicos", origem: "academico"},
-    
-    // Investigador
-    {nome: "Investigação", atributo: "Ideia", descricao: "Analisar cenas, encontrar pistas", origem: "investigador"},
-    {nome: "Percepção", atributo: "Ideia", descricao: "Notar detalhes, perceber perigos", origem: "investigador"},
-    
-    // Militar
-    {nome: "Luta", atributo: "Força", descricao: "Combate corpo-a-corpo", origem: "militar"},
-    {nome: "Tática", atributo: "Ideia", descricao: "Planejar estratégias em combate", origem: "militar"},
-    
-    // Civil
-    {nome: "Persuasão", atributo: "Carisma", descricao: "Convencer, negociar no dia a dia", origem: "civil"},
-    {nome: "Intuição", atributo: "Ideia", descricao: "Pressentir situações, ler pessoas", origem: "civil"},
-    
-    // Cultista
-    {nome: "Ocultismo", atributo: "Conexao", descricao: "Conhecimento do paranormal e rituais", origem: "cultista"},
-    {nome: "Enganação", atributo: "Carisma", descricao: "Mentir, esconder informações", origem: "cultista"},
-    
-    // Perícias gerais disponíveis para todas as origens
-    {nome: "Atletismo", atributo: "Força", descricao: "Correr, saltar, escalar", origem: null},
-    {nome: "Sobrevivência", atributo: "Resistência", descricao: "Resistir a elementos, encontrar recursos", origem: null},
-    {nome: "Vontade", atributo: "Resistência", descricao: "Resistir a pressão mental, medo", origem: null},
-    {nome: "Diplomacia", atributo: "Carisma", descricao: "Lidar com autoridades, negociações formais", origem: null},
-    {nome: "Furtividade", atributo: "Destreza", descricao: "Mover-se silenciosamente, esconder-se", origem: null},
-    {nome: "Pontaria", atributo: "Destreza", descricao: "Usar armas à distância", origem: null},
-    {nome: "Medicina", atributo: "Ideia", descricao: "Primeiros socorros, conhecimento médico", origem: null},
-    {nome: "Tecnologia", atributo: "Ideia", descricao: "Usar e consertar equipamentos eletrônicos", origem: null},
-    {nome: "Artes", atributo: "Carisma", descricao: "Expressão artística, performance", origem: null},
-    {nome: "Empatia", atributo: "Conexao", descricao: "Sentir emoções, conectar-se com outros", origem: null},
-    {nome: "Furtar", atributo: "Destreza", descricao: "Pegar objetos sem ser notado", origem: null},
-    {nome: "Intimidação", atributo: "Carisma", descricao: "Amassar, coagir pessoas", origem: null},
-    {nome: "Navegação", atributo: "Ideia", descricao: "Orientar-se, ler mapas", origem: null},
-    {nome: "Animal Handling", atributo: "Conexao", descricao: "Lidar com animais, treiná-los", origem: null},
-    {nome: "Memorização", atributo: "Ideia", descricao: "Lembrar de detalhes, informações", origem: null},
-    {nome: "Observação", atributo: "Ideia", descricao: "Analisar ambientes, detectar mudanças", origem: null}
-  ],
-  
-  init: function() {
-    this.carregarElementos();
+
+  // Estado da Aplicação
+  state: {
+    data: null, // Dados do localStorage
+    selecionadas: new Set(),
+    automaticas: new Set(),
+    pontosTotais: 0,
+    pontosGastos: 0
+  },
+
+  // Inicialização
+  init() {
     this.carregarDados();
+    this.cacheDom();
+    this.bindEvents();
     
-    if (!this.dados) {
-      alert("Nenhum personagem encontrado! Retorne à criação.");
-      window.location.href = "index.html";
-      return;
+    if (this.state.data) {
+      this.renderHeader();
+      this.calcularAtributos();
+      this.calcularLogicaPericias();
+      this.renderListaPericias();
+      this.updateUI();
     }
-    
-    this.carregarInfoPersonagem();
-    this.calcularTodosStatus();
-    this.carregarPericiasOrigem();
-    this.calcularPontosPericia();
-    this.renderizarTodasPericias();
   },
-  
-  carregarElementos: function() {
-    this.el = {
-      charName: document.getElementById('charName'),
-      charRace: document.getElementById('charRace'),
-      charClass: document.getElementById('charClass'),
-      charLevel: document.getElementById('charLevel'),
-      charOrigem: document.getElementById('charOrigem'),
-      
-      pontosBasePericia: document.getElementById('pontosBasePericia'),
-      pontosBonusOrigem: document.getElementById('pontosBonusOrigem'),
-      pontosBonusNivel: document.getElementById('pontosBonusNivel'),
-      pontosPericiaTotal: document.getElementById('pontosPericiaTotal'),
-      pontosPericiaGastos: document.getElementById('pontosPericiaGastos'),
-      pontosPericia: document.getElementById('pontosPericia'),
-      nivelPericia: document.getElementById('nivelPericia'),
-      
-      periciasContainer: document.getElementById('periciasContainer')
+
+  // Cache de Elementos DOM
+  cacheDom() {
+    this.dom = {
+      gridAtributos: document.getElementById('gridAtributos'),
+      listaPericias: document.getElementById('listaPericias'),
+      displayPontos: document.getElementById('displayPontos'),
+      progressBar: document.getElementById('progressBar'),
+      feedback: document.getElementById('feedbackMsg'),
+      pv: document.getElementById('pv'),
+      san: document.getElementById('san'),
+      pe: document.getElementById('pe'),
+      btnSalvar: document.getElementById('btnSalvar'),
+      btnVoltar: document.getElementById('btnVoltar')
     };
   },
-  
-  carregarDados: function() {
+
+  // Event Listeners
+  bindEvents() {
+    this.dom.btnVoltar.addEventListener('click', () => {
+      if(confirm("Deseja voltar para a criação? As alterações não salvas serão perdidas.")) {
+        window.location.href = "criacao_personagem.html"; // Ajuste o link se precisar
+      }
+    });
+
+    this.dom.btnSalvar.addEventListener('click', () => this.salvarFinal());
+  },
+
+  carregarDados() {
     try {
-      const dadosSalvos = localStorage.getItem("personagemRPG");
+      const raw = localStorage.getItem("personagemRPG");
+      if (!raw) throw new Error("Sem dados");
+      this.state.data = JSON.parse(raw);
+    } catch (e) {
+      alert("Erro: Nenhum personagem encontrado. Redirecionando...");
+      // window.location.href = "index.html"; // Descomente em produção
       
-      if (!dadosSalvos) {
-        console.error("Nenhum dado de personagem encontrado no localStorage");
-        return;
-      }
-      
-      this.dados = JSON.parse(dadosSalvos);
-      
-      // Carregar perícias já selecionadas
-      if (this.dados.periciasExtras) {
-        this.periciasSelecionadas = this.dados.periciasExtras;
-      }
-      
-    } catch (error) {
-      console.error("Erro ao carregar dados:", error);
-      alert("Erro ao carregar dados do personagem.");
+      // MOCK PARA TESTE (Caso abra o arquivo direto sem passar pela criação)
+      this.state.data = {
+        nome: "Agente Teste", origem: "investigador", classe: "Especialista", nivel: 2,
+        forca: 1, resistencia: 2, carisma: 1, ideia: 3, destreza: 2, conexao: 1,
+        forcaTotal: 1, resistenciaTotal: 2, carismaTotal: 1, ideiaTotal: 4, destrezaTotal: 2, conexaoTotal: 1,
+        periciasExtras: [] 
+      };
     }
   },
-  
-  carregarInfoPersonagem: function() {
-    if (!this.dados) return;
-    
-    this.el.charName.textContent = this.dados.nome || "Sem Nome";
-    this.el.charRace.textContent = this.formatarTexto(this.dados.raca);
-    this.el.charClass.textContent = this.dados.classe || "Iniciante";
-    this.el.charLevel.textContent = this.dados.nivel || 1;
-    this.el.charOrigem.textContent = this.formatarTexto(this.dados.origem) || "Não definida";
-    this.el.nivelPericia.textContent = this.dados.nivel || 1;
-    
-    this.carregarAtributosDetalhados();
+
+  renderHeader() {
+    const d = this.state.data;
+    document.getElementById('viewNome').textContent = d.nome;
+    document.getElementById('viewOrigem').textContent = this.capitalize(d.origem);
+    document.getElementById('viewClasse').textContent = d.classe;
+    document.getElementById('viewNivel').textContent = d.nivel;
   },
-  
-  carregarAtributosDetalhados: function() {
-    const atributos = [
-      {id: 'forca', base: 'forca', total: 'forcaTotal'},
-      {id: 'resistencia', base: 'resistencia', total: 'resistenciaTotal'},
-      {id: 'carisma', base: 'carisma', total: 'carismaTotal'},
-      {id: 'ideia', base: 'ideia', total: 'ideiaTotal'},
-      {id: 'destreza', base: 'destreza', total: 'destrezaTotal'},
-      {id: 'conexao', base: 'conexao', total: 'conexaoTotal'}
-    ];
-    
-    atributos.forEach(attr => {
-      const elemento = document.getElementById(attr.id);
-      const infoElemento = document.getElementById(attr.id + 'Info');
-      
-      const valorBase = this.dados[attr.base] || 0;
-      const valorTotal = this.dados[attr.total] || 0;
-      const bonus = valorTotal - valorBase;
-      
-      if (elemento) elemento.value = valorTotal;
-      
-      if (infoElemento) {
-        infoElemento.textContent = `(Base: ${valorBase} + Bônus: ${bonus} = Total: ${valorTotal})`;
-        if (bonus > 0) {
-          infoElemento.style.color = '#ff9900';
-          infoElemento.style.fontWeight = 'bold';
+
+  capitalize(str) {
+    if(!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  },
+
+  calcularAtributos() {
+    this.dom.gridAtributos.innerHTML = '';
+    const d = this.state.data;
+
+    // Renderiza inputs dos atributos
+    this.config.atributos.forEach(attr => {
+      const base = parseInt(d[attr] || 0);
+      const total = parseInt(d[attr + 'Total'] || base);
+      const bonus = total - base;
+
+      const html = `
+        <div class="stat-card">
+          <label class="stat-label">${this.capitalize(attr)}</label>
+          <span class="stat-detail">Base: ${base} | Bônus: ${bonus}</span>
+          <input type="number" value="${total}" readonly>
+        </div>
+      `;
+      this.dom.gridAtributos.insertAdjacentHTML('beforeend', html);
+    });
+
+    // Calcula Derivados (Fórmulas do seu sistema)
+    // PV = 10 + (Força + Resistência × 2)
+    // SAN = 5 + (Conexão + Ideia × 2)
+    // PE = 5 + Resistência + Conexão
+    const forca = d.forcaTotal || 0;
+    const res = d.resistenciaTotal || 0;
+    const ideia = d.ideiaTotal || 0;
+    const conexao = d.conexaoTotal || 0;
+
+    this.dom.pv.value = 10 + (forca + (res * 2));
+    this.dom.san.value = 5 + (conexao + (ideia * 2));
+    this.dom.pe.value = 5 + res + conexao;
+  },
+
+  calcularLogicaPericias() {
+    const d = this.state.data;
+    const nivel = parseInt(d.nivel || 1);
+
+    // 1. Identificar Automáticas da Origem
+    this.config.pericias.forEach(p => {
+      if (p.origem === d.origem) {
+        this.state.automaticas.add(p.id);
+        this.state.selecionadas.add(p.id);
+      }
+    });
+
+    // 2. Recuperar pericias já salvas (se houver edição)
+    if (d.periciasExtras) {
+      d.periciasExtras.forEach(nomeOuId => {
+        // Tenta achar pelo nome ou ID
+        const pObj = this.config.pericias.find(p => p.nome === nomeOuId || p.id === nomeOuId);
+        if (pObj && !this.state.automaticas.has(pObj.id)) {
+          this.state.selecionadas.add(pObj.id);
         }
-      }
+      });
+    }
+
+    // 3. Calcular Limites
+    const ptsBase = this.config.pontosBase;
+    const ptsOrigem = this.config.pontosOrigem;
+    const ptsNivel = Math.floor((nivel - 1) / this.config.divisorNivel);
+    
+    this.state.pontosTotais = ptsBase + ptsOrigem + ptsNivel;
+
+    // Atualiza Texto da UI
+    document.getElementById('txtBase').textContent = ptsBase;
+    document.getElementById('txtOrigem').textContent = ptsOrigem;
+    document.getElementById('txtNivel').textContent = ptsNivel;
+
+    this.recalcGastos();
+  },
+
+  recalcGastos() {
+    // Gastos = Total Selecionado - Automaticas
+    let count = 0;
+    this.state.selecionadas.forEach(id => {
+      if (!this.state.automaticas.has(id)) count++;
     });
+    this.state.pontosGastos = count;
   },
-  
-  carregarPericiasOrigem: function() {
-    if (!this.dados || !this.dados.origem) return;
-    
-    const origem = this.dados.origem;
-    
-    // Filtrar perícias da origem atual
-    this.periciasOrigemAutomaticas = this.todasPericias.filter(p => 
-      p.origem === origem
-    );
-    
-    console.log(`Perícias automáticas da origem ${origem}:`, this.periciasOrigemAutomaticas);
-    
-    // Adicionar automaticamente as perícias da origem às selecionadas
-    this.periciasOrigemAutomaticas.forEach(p => {
-      if (!this.periciasSelecionadas.includes(p.nome)) {
-        this.periciasSelecionadas.push(p.nome);
-      }
-    });
-  },
-  
-  calcularPontosPericia: function() {
-    if (!this.dados) return;
-    
-    const nivel = this.dados.nivel || 1;
-    
-    // Calcular pontos totais disponíveis
-    const pontosBase = this.config.pontosPericiaBase;
-    const pontosOrigem = this.config.pontosBonusOrigem;
-    const bonusNivel = Math.floor((nivel - 1) / this.config.bonusPericiaPorNivel);
-    const pontosTotais = pontosBase + pontosOrigem + bonusNivel;
-    
-    // Calcular pontos já gastos (EXCLUINDO as automáticas da origem)
-    const periciasExtras = this.periciasSelecionadas.filter(p => 
-      !this.periciasOrigemAutomaticas.some(auto => auto.nome === p)
-    );
-    const pontosGastos = periciasExtras.length;
-    
-    // Calcular pontos restantes
-    this.pontosPericiaDisponiveis = pontosTotais - pontosGastos;
-    if (this.pontosPericiaDisponiveis < 0) this.pontosPericiaDisponiveis = 0;
-    
-    // Atualizar display
-    this.el.pontosBasePericia.textContent = pontosBase;
-    this.el.pontosBonusOrigem.textContent = pontosOrigem;
-    this.el.pontosBonusNivel.textContent = bonusNivel;
-    this.el.pontosPericiaTotal.textContent = pontosTotais;
-    this.el.pontosPericiaGastos.textContent = pontosGastos;
-    this.el.pontosPericia.textContent = this.pontosPericiaDisponiveis;
-  },
-  
-  calcularTodosStatus: function() {
-    if (!this.dados) return;
-    
-    const forcaTotal = this.dados.forcaTotal || 0;
-    const resistenciaTotal = this.dados.resistenciaTotal || 0;
-    const ideiaTotal = this.dados.ideiaTotal || 0;
-    const conexaoTotal = this.dados.conexaoTotal || 0;
-    const nivel = this.dados.nivel || 1;
-    
-    // Vida
-    const vida = this.config.vidaBase + 
-                 (forcaTotal * this.config.vidaPorForca) + 
-                 (resistenciaTotal * this.config.vidaPorResistencia) +
-                 (nivel * this.config.bonusVidaPorNivel);
-    document.getElementById('vida').value = vida;
-    
-    // Sanidade
-    const sanidade = this.config.sanidadeBase + 
-                     (ideiaTotal * this.config.sanidadePorIdeia) + 
-                     (conexaoTotal * this.config.sanidadePorConexao) +
-                     (nivel * this.config.bonusSanidadePorNivel);
-    document.getElementById('sanidade').value = sanidade;
-    
-    // Esforço
-    const esforco = this.config.esforcoBase + 
-                    (forcaTotal * this.config.esforcoPorForca) +
-                    Math.floor(nivel / 2);
-    document.getElementById('esforco').value = esforco;
-  },
-  
-  formatarTexto: function(texto) {
-    if (!texto) return "";
-    return texto.charAt(0).toUpperCase() + texto.slice(1);
-  },
-  
-  renderizarTodasPericias: function() {
-    if (!this.dados) return;
-    
-    this.el.periciasContainer.innerHTML = '';
-    
-    // Separar perícias por tipo
-    const periciasDaOrigem = this.todasPericias.filter(p => p.origem === this.dados.origem);
-    const periciasGerais = this.todasPericias.filter(p => p.origem === null);
-    const periciasOutrasOrigens = this.todasPericias.filter(p => 
-      p.origem !== null && p.origem !== this.dados.origem
-    );
-    
-    // 1. PERÍCIAS DA ORIGEM ATUAL (AUTOMÁTICAS)
-    if (periciasDaOrigem.length > 0) {
-      const titulo = document.createElement('h3');
-      titulo.style.color = '#ffcc00';
-      titulo.style.marginTop = '15px';
-      titulo.textContent = `Perícias da Origem: ${this.formatarTexto(this.dados.origem)}`;
-      this.el.periciasContainer.appendChild(titulo);
-      
-      periciasDaOrigem.forEach(p => {
-        const div = this.criarElementoPericia(p, true);
-        this.el.periciasContainer.appendChild(div);
-      });
-    }
-    
-    // 2. PERÍCIAS GERAIS (DISPONÍVEIS PARA TODOS)
-    if (periciasGerais.length > 0) {
-      const titulo = document.createElement('h3');
-      titulo.style.color = '#00ccff';
-      titulo.style.marginTop = '20px';
-      titulo.textContent = 'Perícias Gerais Disponíveis';
-      this.el.periciasContainer.appendChild(titulo);
-      
-      periciasGerais.forEach(p => {
-        const div = this.criarElementoPericia(p, false);
-        this.el.periciasContainer.appendChild(div);
-      });
-    }
-    
-    // 3. PERÍCIAS DE OUTRAS ORIGENS (NÃO DISPONÍVEIS)
-    if (periciasOutrasOrigens.length > 0) {
-      const titulo = document.createElement('h3');
-      titulo.style.color = '#666';
-      titulo.style.marginTop = '20px';
-      titulo.textContent = 'Perícias de Outras Origens (Não Disponíveis)';
-      this.el.periciasContainer.appendChild(titulo);
-      
-      periciasOutrasOrigens.forEach(p => {
-        const div = this.criarElementoPericia(p, false, true);
-        this.el.periciasContainer.appendChild(div);
-      });
-    }
-  },
-  
-  criarElementoPericia: function(pericia, isAutomatica = false, isBloqueada = false) {
-    const div = document.createElement("div");
-    div.className = isAutomatica ? "pericia-automatica" : "pericia";
-    
-    if (isBloqueada) {
-      div.className += " pericia-locked";
-      div.style.opacity = "0.5";
-    }
-    
-    const header = document.createElement("div");
-    header.className = "pericia-header";
-    
-    const nomeSpan = document.createElement("span");
-    nomeSpan.className = "pericia-nome";
-    nomeSpan.textContent = pericia.nome;
-    
-    const atributoSpan = document.createElement("span");
-    atributoSpan.className = "pericia-atributo";
-    atributoSpan.textContent = pericia.atributo;
-    
-    header.appendChild(nomeSpan);
-    header.appendChild(atributoSpan);
-    
-    const desc = document.createElement("div");
-    desc.className = "pericia-desc";
-    desc.textContent = pericia.descricao;
-    
-    // Checkbox
-    const checkboxContainer = document.createElement("div");
-    checkboxContainer.style.marginTop = "5px";
-    
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.value = pericia.nome;
-    cb.checked = this.periciasSelecionadas.includes(pericia.nome);
-    cb.disabled = isAutomatica || isBloqueada || (this.pontosPericiaDisponiveis <= 0 && !cb.checked);
-    
-    if (isAutomatica) {
-      cb.disabled = true;
-      cb.checked = true;
-    }
-    
-    if (isBloqueada) {
-      cb.disabled = true;
-      cb.checked = false;
-    }
-    
-    cb.onclick = () => this.selecionarPericia(cb, pericia.nome, isAutomatica);
-    
-    const label = document.createElement("span");
-    label.textContent = isAutomatica ? " (Obrigatória da origem)" : " Selecionar";
-    label.style.marginLeft = "5px";
-    label.style.fontSize = "11px";
-    label.style.color = isAutomatica ? "#ffcc00" : "#aaa";
-    
-    checkboxContainer.appendChild(cb);
-    checkboxContainer.appendChild(label);
-    
-    // Info de origem se aplicável
-    if (pericia.origem && !isAutomatica) {
-      const origemInfo = document.createElement("div");
-      origemInfo.className = "pericia-bonus";
-      origemInfo.textContent = `(Origem: ${this.formatarTexto(pericia.origem)})`;
-      checkboxContainer.appendChild(origemInfo);
-    }
-    
-    div.appendChild(header);
-    div.appendChild(desc);
-    div.appendChild(checkboxContainer);
-    
-    return div;
-  },
-  
-  selecionarPericia: function(checkbox, nomePericia, isAutomatica = false) {
-    // Verificar se é automática (não pode desselecionar)
-    if (isAutomatica) {
-      checkbox.checked = true;
-      alert("Esta perícia é obrigatória da sua origem e não pode ser removida!");
-      return;
-    }
-    
-    if (checkbox.checked) {
-      if (this.pontosPericiaDisponiveis === 0) {
-        checkbox.checked = false;
-        alert("Não há mais pontos de especialidade disponíveis!");
-        return;
-      }
-      
-      if (!this.periciasSelecionadas.includes(nomePericia)) {
-        this.periciasSelecionadas.push(nomePericia);
-      }
+
+  togglePericia(id) {
+    const feedback = this.dom.feedback;
+    feedback.classList.remove('visible'); // Reset anim
+
+    if (this.state.selecionadas.has(id)) {
+      // Remover
+      this.state.selecionadas.delete(id);
     } else {
-      const index = this.periciasSelecionadas.indexOf(nomePericia);
-      if (index > -1) {
-        this.periciasSelecionadas.splice(index, 1);
+      // Adicionar (Verificar limite)
+      const disponiveis = this.state.pontosTotais - this.state.pontosGastos;
+      if (disponiveis <= 0) {
+        feedback.textContent = "LIMITE DE PONTOS ATINGIDO!";
+        feedback.classList.add('visible');
+        return; // Sai sem adicionar
       }
+      this.state.selecionadas.add(id);
     }
     
-    // Recalcular pontos
-    this.calcularPontosPericia();
-    this.renderizarTodasPericias(); // Re-renderizar para atualizar estados
+    this.recalcGastos();
+    this.renderListaPericias(); // Re-renderiza para atualizar visual dos checkboxes
+    this.updateUI();
   },
-  
-  salvarPericias: function() {
-    if (!this.dados) return;
+
+  updateUI() {
+    const disponiveis = this.state.pontosTotais - this.state.pontosGastos;
+    this.dom.displayPontos.textContent = disponiveis;
+
+    // Barra de progresso
+    const porcentagem = (this.state.pontosGastos / this.state.pontosTotais) * 100;
+    this.dom.progressBar.style.width = `${porcentagem}%`;
     
-    // Verificar pontos
-    const nivel = this.dados.nivel || 1;
-    const pontosTotaisPermitidos = this.config.pontosPericiaBase + 
-                                  this.config.pontosBonusOrigem + 
-                                  Math.floor((nivel - 1) / this.config.bonusPericiaPorNivel);
-    
-    // Contar apenas perícias extras (excluindo as automáticas)
-    const periciasExtras = this.periciasSelecionadas.filter(p => 
-      !this.periciasOrigemAutomaticas.some(auto => auto.nome === p)
-    );
-    
-    if (periciasExtras.length > pontosTotaisPermitidos) {
-      alert(`Você selecionou ${periciasExtras.length} perícias extras, mas só tem ${pontosTotaisPermitidos} pontos disponíveis!`);
-      return;
+    if (porcentagem >= 100) {
+      this.dom.progressBar.classList.add('full');
+    } else {
+      this.dom.progressBar.classList.remove('full');
     }
+  },
+
+  renderListaPericias() {
+    const container = this.dom.listaPericias;
+    container.innerHTML = '';
+    const origemChar = this.state.data.origem;
+
+    // Separar em grupos para renderização organizada
+    const automaticas = [];
+    const gerais = [];
+    const bloqueadas = [];
+
+    this.config.pericias.forEach(p => {
+      if (p.origem === origemChar) automaticas.push(p);
+      else if (p.origem === null) gerais.push(p);
+      else bloqueadas.push(p);
+    });
+
+    const renderItem = (p, type) => {
+      const isAuto = type === 'auto';
+      const isLocked = type === 'locked';
+      const isSelected = this.state.selecionadas.has(p.id);
+      
+      let cssClass = 'pericia-item';
+      if (isAuto) cssClass += ' automatic';
+      if (isSelected && !isAuto) cssClass += ' selected';
+      if (isLocked) cssClass += ' locked';
+
+      const checkState = isSelected ? 'checked' : '';
+      const checkClass = isAuto ? 'custom-cb auto' : `custom-cb ${checkState}`;
+      const checkSymbol = isAuto ? '★' : (isSelected ? '✓' : '');
+
+      const div = document.createElement('div');
+      div.className = cssClass;
+      div.innerHTML = `
+        <div class="pericia-content">
+          <span class="p-name">${p.nome}</span>
+          <span class="p-attr">${p.atributo}</span>
+          <small class="p-desc">${p.desc}</small>
+        </div>
+        <div class="checkbox-wrapper">
+           ${isAuto ? '<small style="color:var(--accent-color)">AUTO</small>' : ''}
+           ${isLocked ? '<small>Bloqueado</small>' : ''}
+           <div class="${checkClass}">${checkSymbol}</div>
+        </div>
+      `;
+
+      if (!isLocked && !isAuto) {
+        div.addEventListener('click', () => this.togglePericia(p.id));
+        div.style.cursor = 'pointer';
+      }
+
+      container.appendChild(div);
+    };
+
+    // 1. Renderizar Automáticas
+    if(automaticas.length) {
+      container.innerHTML += `<h3 style="padding:10px; color:var(--accent-color); font-size:0.9rem;">Da Origem (${this.capitalize(origemChar)})</h3>`;
+      automaticas.forEach(p => renderItem(p, 'auto'));
+    }
+
+    // 2. Renderizar Gerais
+    container.innerHTML += `<h3 style="padding:10px; color:var(--secondary-color); font-size:0.9rem; margin-top:10px;">Gerais</h3>`;
+    gerais.forEach(p => renderItem(p, 'geral'));
+
+    // 3. Renderizar Bloqueadas (opcional, se quiser esconder, só apagar esse bloco)
+    if(bloqueadas.length) {
+      container.innerHTML += `<h3 style="padding:10px; color:#555; font-size:0.9rem; margin-top:10px;">Outras Origens (Indisponível)</h3>`;
+      bloqueadas.forEach(p => renderItem(p, 'locked'));
+    }
+  },
+
+  salvarFinal() {
+    // Validação final (opcional: exigir gastar tudo?)
+    // if (this.state.pontosGastos < this.state.pontosTotais) ...
+
+    const d = this.state.data;
     
-    // Salvar dados
-    this.dados.periciasAutomaticas = this.periciasOrigemAutomaticas.map(p => p.nome);
-    this.dados.periciasExtras = periciasExtras;
-    this.dados.periciasTodas = this.periciasSelecionadas;
+    // Atualiza derivados no objeto
+    d.vidaMaxima = parseInt(this.dom.pv.value);
+    d.sanidadeMaxima = parseInt(this.dom.san.value);
+    d.pontosEsforco = parseInt(this.dom.pe.value);
     
-    localStorage.setItem("personagemRPG", JSON.stringify(this.dados));
+    // Salva listas de nomes (para compatibilidade com JSON antigo)
+    const listaExtras = [];
+    const listaAuto = [];
     
-    // Atualizar lista de fichas
-    const fichas = JSON.parse(localStorage.getItem("fichasRPG")) || [];
-    const fichaIndex = fichas.findIndex(f => f.nome === this.dados.nome);
+    this.state.selecionadas.forEach(id => {
+      const p = this.config.pericias.find(x => x.id === id);
+      if (this.state.automaticas.has(id)) listaAuto.push(p.nome);
+      else listaExtras.push(p.nome);
+    });
+
+    d.periciasExtras = listaExtras;
+    d.periciasAutomaticas = listaAuto;
+    d.periciasTodas = [...listaAuto, ...listaExtras];
+
+    // Salva no LocalStorage
+    localStorage.setItem("personagemRPG", JSON.stringify(d));
     
-    if (fichaIndex !== -1) {
-      fichas[fichaIndex].pericias = this.periciasSelecionadas;
+    // Atualiza lista de fichas (se existir esse sistema)
+    try {
+      const fichas = JSON.parse(localStorage.getItem("fichasRPG")) || [];
+      const idx = fichas.findIndex(f => f.nome === d.nome);
+      if (idx !== -1) {
+        fichas[idx] = d;
+      } else {
+        fichas.push(d);
+      }
       localStorage.setItem("fichasRPG", JSON.stringify(fichas));
-    }
-    
-    alert("Perícias salvas com sucesso!");
-  },
-  
-  irParaFichaFinal: function() {
-    this.salvarPericias();
-    window.location.href = "ficha-final.html";
-  },
-  
-  voltarParaCriacao: function() {
-    window.location.href = "criacao_personagem.html";
+    } catch(e) { console.log("Sistema de lista de fichas não detectado."); }
+
+    alert("Personagem salvo com sucesso!");
+    window.location.href = "ficha-final.html"; // Redirecionamento
   }
 };
 
-// Inicializar sistema
+// Iniciar quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
-  SistemaPosCriacao.init();
+  App.init();
 });
-
-// Funções globais
-function salvarPericias() {
-  SistemaPosCriacao.salvarPericias();
-}
-
-function irParaFichaFinal() {
-  SistemaPosCriacao.irParaFichaFinal();
-}
-
-function voltarParaCriacao() {
-  SistemaPosCriacao.voltarParaCriacao();
-}
 </script>
 
 </body>
